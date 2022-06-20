@@ -21,12 +21,47 @@
           </td>
           <td><%= link_to @new_book.title, @new_book %></td>
           <td><%= @new_book.body %></td>
+          <%= render'post', book: @new_book %>
+					<td>コメント数: <%= @new_book.book_comments.count %></td>
           <% if @new_book.user == current_user %>
           <td><%= link_to 'Edit', edit_book_path(@new_book), class:'btn btn-success btn-sm' %></td>
           <td><%= link_to 'Destroy', book_path(@new_book), method: :delete, class:'btn btn-danger btn-sm' %></td>
           <% end %>
         </tr>
       </table>
+      
+      <table>
+				<% @new_book.book_comments.each do |book_comment|%>
+					<tr>
+						<td>
+							<%= link_to(@new_book.user) do %>
+                <p><%= image_tag @new_book.user.get_profile_image(100,100) %></p>
+                <p><%= book_comment.user.name %></p>
+              <% end %>
+						</td>
+						<td>
+							<%= book_comment.comment %>
+						</td>
+						<td>
+							<% if book_comment.user_id == current_user.id %>
+								<%= link_to "Destroy", book_book_comment_path(@new_book, book_comment.id), method: :delete, class: "btn-sm btn-danger destroy_book_comment_#{@new_book.id}" %>
+							<% end %>
+						</td>
+					</tr>
+				<% end %>
+			</table>
+
+			<div class="post-comment">
+				<%= form_with model: [@new_book, @book_comment] do |f| %>
+					<div class="form-group">
+						<%= f.text_area :comment, size: "100x5" %>
+					</div>
+					<div>
+						<%= f.submit "送信" %>
+					</div>
+				<% end %>
+			</div>
+			
     </div>
   </div>
 <div>
